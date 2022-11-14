@@ -16,8 +16,8 @@ mongoose.connect(DB).then(() => {
 
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
-const etflistRouter = require("./routes/etflist");
-const etfcontentRouter = require("./routes/etfcontent");
+const etflistRouter = require("./routes/ETFList");
+const etfcontentRouter = require("./routes/ETFContent");
 const twsecodeRouter = require("./routes/TWSECode");
 const diyRouter = require("./routes/DIYList");
 
