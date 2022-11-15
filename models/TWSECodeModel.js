@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const TWSECodeSchema = new mongoose.Schema({
-  data: String
+  data: Array
 }, { versionKey: false }
 );
 

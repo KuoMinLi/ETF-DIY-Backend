@@ -5,6 +5,22 @@ const DIYListSchema = new mongoose.Schema({
     ref: 'users' 
   },
   name: String,
+  content: [
+    { 
+      name:{
+        type: String,
+        required: [true, '請輸入正確資料']
+      },
+      code: {
+        type: String,
+        required: [true, '請輸入正確資料']
+      },
+      percentage: {
+        type: Number,
+        required: [true, '請輸入正確資料']
+      },
+    }
+  ]
 }, { versionKey: false }
 );
 

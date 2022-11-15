@@ -9,13 +9,6 @@ router.get(
   isAuth,
   handleErrorAsync(async (req, res, next) => {
     const DIYListData = await DIYList.find({ userid: req.user.id });
-
-    // const ETFContentData = await ETFContent.find({ ETFList: id }).populate({
-    //   path: "ETFList",
-    //   select: ["name", "code"],
-    // });
-
-    // const DIYListData = await DIYList.find();
     res.status(200).json({
       status: "success",
       data: DIYListData,
@@ -23,14 +16,28 @@ router.get(
   })
 );
 
+router.get("/:id", isAuth, handleErrorAsync(async (req, res, next) => {
+  const { id } = req.params;
+  const DIYListData = await DIYList.find({ _id: id, userid: req.user.id });
+  res.status(200).json({
+    status: "success",
+    data: DIYListData,
+  });
+}));
+
+
+
+
+
 router.post(
   "/",
   isAuth,
   handleErrorAsync(async (req, res, next) => {
-    const { name } = req.body;
+    const { name, content } = req.body;
     const userid = req.user.id;
     const newDIYList = await DIYList.create({
       name,
+      content,
       userid,
     });
     res.status(200).json({
