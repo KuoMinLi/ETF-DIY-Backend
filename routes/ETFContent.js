@@ -1,30 +1,33 @@
-var express = require("express");
-var router = express.Router();
-const ETFContent = require("../models/ETFContentModel");
+const express = require('express');
 
-// router.get("/", async (req, res, next) => {
-//   const ETFContentData = await ETFContent.find();
-//   res.status(200).json({
-//     status: "success",
-//     data: ETFContentData,
-//   });
-// });
+const router = express.Router();
+const ETFContent = require('../models/ETFContentModel');
 
-router.post("/", async (req, res, next) => {
-  const { ETFList, name, code, percentage  } = req.body;
+router.get('/', async (req, res) => {
+  const ETFContentData = await ETFContent.find();
+  res.status(200).json({
+    status: 'success',
+    data: ETFContentData,
+  });
+});
+
+router.post('/', async (req, res) => {
+  const {
+    ETFList, name, code, percentage,
+  } = req.body;
   const newETFContent = await ETFContent.create({
-    ETFList, name, code, percentage
+    ETFList, name, code, percentage,
   });
   try {
     res.status(200).json({
-      status: "success",
-      message: "新增成功",
+      status: 'success',
+      message: '新增成功',
       data: newETFContent,
     });
   } catch (error) {
     res.status(400).json({
-      status: "fail",
-      message: "新增失敗",
+      status: 'fail',
+      message: '新增失敗',
       data: error,
     });
   }
@@ -49,7 +52,5 @@ router.post("/", async (req, res, next) => {
 //     });
 //   }
 // });
-  
-
 
 module.exports = router;

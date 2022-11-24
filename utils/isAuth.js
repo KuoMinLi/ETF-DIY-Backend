@@ -1,23 +1,25 @@
-const jwt = require("jsonwebtoken");
-const User = require("../models/usersModel");
-const handleErrorAsync = require("../utils/handleErrorAsync");
-
+/* eslint-disable no-unused-expressions */
+/* eslint-disable prefer-destructuring */
+/* eslint-disable consistent-return */
+const jwt = require('jsonwebtoken');
+const User = require('../models/usersModel');
+const handleErrorAsync = require('./handleErrorAsync');
 
 const isAuth = handleErrorAsync(async (req, res, next) => {
   // 確認 token 是否存在
   let token;
 
   if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith("Bearer")
+    req.headers.authorization
+    && req.headers.authorization.startsWith('Bearer')
   ) {
-    token = req.headers.authorization.split(" ")[1];
+    token = req.headers.authorization.split(' ')[1];
   }
 
   if (!token) {
     return res.status(400).json({
-      status: "fail",
-      message: "您尚未登入",
+      status: 'fail',
+      message: '您尚未登入',
     });
   }
 
