@@ -1,33 +1,33 @@
-var express = require("express");
-var router = express.Router();
-const TWSECode = require("../models/TWSECodeModel");
+const express = require('express');
 
-router.get("/", async (req, res, next) => {
+const router = express.Router();
+const TWSECode = require('../models/TWSECodeModel');
+
+router.get('/', async (req, res) => {
   const TWSECodeData = await TWSECode.find();
   try {
-  res.status(200).json({
-    status: "success",
-    data: TWSECodeData,
-  });
+    res.status(200).json({
+      status: 'success',
+      data: TWSECodeData,
+    });
   } catch (error) {
     res.status(400).json({
-      status: "fail",
-      message: "查詢失敗",
+      status: 'fail',
+      message: '查詢失敗',
       data: error,
     });
   }
 });
 
-router.post("/", async (req, res, next) => {
-  console.log(req.body);
+router.post('/', async (req, res) => {
   const { data } = req.body;
- 
+
   const newTWSECode = await TWSECode.create({
-    data
+    data,
   });
   res.status(200).json({
-    status: "success",
-    message: "新增成功",
+    status: 'success',
+    message: '新增成功',
     data: newTWSECode,
   });
 });
