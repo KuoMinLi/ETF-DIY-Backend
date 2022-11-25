@@ -1,11 +1,21 @@
 const express = require('express');
 
 const router = express.Router();
-const ETFList = require('../models/ETFListModel');
-const ETFContent = require('../models/ETFContentModel');
+const ETFList = require('../models/ETFModel');
 
 router.get('/', async (req, res) => {
-  const ETFListData = await ETFList.find();
+  const ETFListAll = await ETFList.find();
+  const ETFListData = ETFListAll.reduce((acc, item) => {
+    const {
+      id, name, code, custodyFee, managementFee, category,
+    } = item;
+    const ETF = {
+      id, name, code, custodyFee, managementFee, category,
+    };
+    acc.push(ETF);
+    return acc;
+  }, []);
+
   res.status(200).json({
     status: 'success',
     data: ETFListData,
@@ -16,12 +26,12 @@ router.get('/:id', async (req, res) => {
   const { id } = req.params;
   try {
     const ETFListData = await ETFList.find({ _id: id });
-    const ETFContentData = await ETFContent.find({ ETFList: id });
+
     res.status(200).json({
       status: 'success',
       data: {
         item: ETFListData,
-        content: ETFContentData,
+
       },
     });
   } catch (error) {
@@ -35,20 +45,38 @@ router.get('/:id', async (req, res) => {
 
 router.post('/', async (req, res) => {
   const {
-    name, code, custodyFee, managementFee, category,
-  } = req.body;
-  const newETFList = await ETFList.create({
-    name,
-    code,
-    custodyFee,
-    managementFee,
-    category,
-  });
-  res.status(200).json({
-    status: 'success',
-    message: '新增成功',
-    data: newETFList,
-  });
+    name, code, custodyFee, managementFee, category, content,
+  } = req.body.data;
+  try {
+    const ckeckETFCode = await ETFList.find({ code });
+    const ckeckETFName = await ETFList.find({ name });
+    if (ckeckETFCode.length > 0 || ckeckETFName.length > 0) {
+      res.status(400).json({
+        status: 'fail',
+        message: '已有此ETF',
+      });
+      return;
+    }
+    const newETFList = await ETFList.create({
+      name,
+      code,
+      custodyFee,
+      managementFee,
+      category,
+      content,
+    });
+    res.status(200).json({
+      status: 'success',
+      message: '新增成功',
+      data: newETFList,
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: 'fail',
+      message: '新增失敗',
+      data: error,
+    });
+  }
 });
 
 module.exports = router;

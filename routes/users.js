@@ -18,32 +18,16 @@ const generateSendJWT = (user, res) => {
     token,
     data: {
       name: user.name,
+      email: user.email,
     },
   });
 };
 
-/* GET users listing. */
-// router.get("/", async (req, res, next) => {
-//   const allUser = await User.find();
-//   res.status(200).json({
-//     status: "success",
-//     data: allUser,
-//   });
-// });
-
-// router.delete("/", async (req, res, next) => {
-//   await User.deleteMany({});
-//   res.status(200).json({
-//     status: "success",
-//     data: "",
-//   });
-// });
-
 router.post('/sign_up', async (req, res) => {
   try {
-    const data = req.body;
+    const { data } = req.body;
     const {
-      name, email, confirmPassword,
+      name, email, confirmPassword, photo, sex,
     } = data;
 
     let { password } = data;
@@ -92,7 +76,9 @@ router.post('/sign_up', async (req, res) => {
     }
 
     password = await bcrypt.hash(password, 12);
-    const user = await User.create({ name, email, password });
+    const user = await User.create({
+      name, email, password, photo, sex,
+    });
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
       expiresIn: Date.now() + 60 * 30 * 1000,
     });
@@ -114,7 +100,7 @@ router.post('/sign_up', async (req, res) => {
 
 router.post('/sign_in', async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password } = req.body.data;
     if (!email || !password) {
       return res.status(400).json({
         status: 'fail',
@@ -166,6 +152,40 @@ router.get(
       status: 'success',
       data: user,
     });
+  }),
+);
+
+router.patch(
+  '/user_info',
+  isAuth,
+  handleErrorAsync(async (req, res) => {
+    const { name, photo, sex } = req.body.data;
+
+    if (!name || !photo || !sex) {
+      return res.status(400).json({
+        status: 'fail',
+        message: '請輸入所有欄位',
+      });
+    }
+    try {
+      const user = await User.findByIdAndUpdate(
+        req.user.id,
+        {
+          name, photo, sex,
+        },
+        { new: true, runValidators: true },
+      );
+      res.status(200).json({
+        status: 'success',
+        message: '已成功更新使用者資訊',
+        data: user,
+      });
+    } catch (error) {
+      res.status(400).json({
+        status: 'fail',
+        message: error.message,
+      });
+    }
   }),
 );
 
