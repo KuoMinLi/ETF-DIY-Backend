@@ -10,6 +10,29 @@ router.get(
   isAuth,
   handleErrorAsync(async (req, res) => {
     const DIYListData = await DIYList.find({ userid: req.user.id });
+    const DIYListAll = DIYListData.reduce((acc, item) => {
+      const {
+        _id, name,
+      } = item;
+      const DIY = {
+        _id, name,
+      };
+      acc.push(DIY);
+      return acc;
+    }, []);
+    res.status(200).json({
+      status: 'success',
+      data: DIYListAll,
+    });
+  }),
+);
+
+router.get(
+  '/:id',
+  isAuth,
+  handleErrorAsync(async (req, res) => {
+    const { id } = req.params;
+    const DIYListData = await DIYList.find({ _id: id, userid: req.user.id });
     res.status(200).json({
       status: 'success',
       data: DIYListData,
@@ -17,20 +40,11 @@ router.get(
   }),
 );
 
-router.get('/:id', isAuth, handleErrorAsync(async (req, res) => {
-  const { id } = req.params;
-  const DIYListData = await DIYList.find({ _id: id, userid: req.user.id });
-  res.status(200).json({
-    status: 'success',
-    data: DIYListData,
-  });
-}));
-
 router.post(
   '/',
   isAuth,
   handleErrorAsync(async (req, res) => {
-    const { name, content } = req.body;
+    const { name, content } = req.body.data;
     const userid = req.user.id;
     const newDIYList = await DIYList.create({
       name,
@@ -67,5 +81,19 @@ router.patch('/:id', isAuth, async (req, res) => {
     });
   }
 });
+
+router.delete(
+  '/:id',
+  isAuth,
+  handleErrorAsync(async (req, res) => {
+    const { id } = req.params;
+    const DIYListData = await DIYList.findByIdAndDelete(id);
+    res.status(200).json({
+      status: 'success',
+      message: '刪除成功',
+      data: DIYListData,
+    });
+  }),
+);
 
 module.exports = router;

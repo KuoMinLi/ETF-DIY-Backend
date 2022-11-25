@@ -19,9 +19,9 @@ const cors = require('cors');
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const etflistRouter = require('./routes/ETFList');
-const etfcontentRouter = require('./routes/ETFContent');
 const twsecodeRouter = require('./routes/TWSECode');
 const diyRouter = require('./routes/DIYList');
+const likeRouter = require('./routes/likeETF');
 
 const app = express();
 
@@ -36,7 +36,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/etflist', etflistRouter);
 app.use('/twsecode', twsecodeRouter);
-app.use('/etfcontent', etfcontentRouter);
 app.use('/diy', diyRouter);
+app.use('/like', likeRouter);
 
 module.exports = app;

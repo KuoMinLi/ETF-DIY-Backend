@@ -11,10 +11,14 @@ const userSchema = new mongoose.Schema({
     unique: true,
     lowercase: true,
   },
-  photo: String,
+  photo: {
+    type: String,
+    default: 'default.jpg',
+  },
   sex: {
     type: String,
     enum: ['male', 'female'],
+    required: [true, '請選擇您的性別'],
   },
   password: {
     type: String,
@@ -27,7 +31,7 @@ const userSchema = new mongoose.Schema({
     default: Date.now,
     select: false,
   },
-});
+}, { versionKey: false });
 // User
 const User = mongoose.model('user', userSchema);
 

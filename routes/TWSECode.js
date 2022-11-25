@@ -20,10 +20,9 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-  const { data } = req.body;
-
+  const { content } = req.body.data;
   const newTWSECode = await TWSECode.create({
-    data,
+    content,
   });
   res.status(200).json({
     status: 'success',
