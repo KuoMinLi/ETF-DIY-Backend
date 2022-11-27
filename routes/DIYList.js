@@ -65,7 +65,7 @@ router.patch('/:id', isAuth, async (req, res) => {
   const DIYListData = await DIYList.findByIdAndUpdate(
     id,
     { name, content },
-    { new: true },
+    { new: true, runValidators: true },
   );
   try {
     res.status(200).json({

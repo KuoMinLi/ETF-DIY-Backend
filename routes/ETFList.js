@@ -22,17 +22,14 @@ router.get('/', async (req, res) => {
   });
 });
 
-router.get('/:id', async (req, res) => {
-  const { id } = req.params;
+router.get('/:code', async (req, res) => {
+  const { code } = req.params;
   try {
-    const ETFListData = await ETFList.find({ _id: id });
+    const ETFListData = await ETFList.find({ code });
 
     res.status(200).json({
       status: 'success',
-      data: {
-        item: ETFListData,
-
-      },
+      data: ETFListData,
     });
   } catch (error) {
     res.status(400).json({
