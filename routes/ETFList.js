@@ -76,4 +76,38 @@ router.post('/', async (req, res) => {
   }
 });
 
+// 須加上isAdmin 來判定
+// router.patch('/:code', async (req, res) => {
+//   const { code } = req.params;
+//   console.log(req.body);
+//   const {
+//     name, custodyFee, managementFee, category, content,
+//   } = req.body.data;
+//   try {
+//     const ETFListData = await ETFList.findOneAndUpdate(
+//       { code },
+//       {
+//         name,
+//         custodyFee,
+//         managementFee,
+//         category,
+//         content,
+//         code,
+//       },
+//       { new: true },
+//     );
+//     res.status(200).json({
+//       status: 'success',
+//       message: '修改成功',
+//       data: ETFListData,
+//     });
+//   } catch (error) {
+//     res.status(400).json({
+//       status: 'fail',
+//       message: '修改失敗',
+//       data: error,
+//     });
+//   }
+// });
+
 module.exports = router;

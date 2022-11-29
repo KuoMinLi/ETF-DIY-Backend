@@ -10,16 +10,12 @@ router.get(
   isAuth,
   handleErrorAsync(async (req, res) => {
     const DIYListData = await DIYList.find({ userid: req.user.id });
-    const DIYListAll = DIYListData.reduce((acc, item) => {
-      const {
-        _id, name,
-      } = item;
-      const DIY = {
-        _id, name,
-      };
-      acc.push(DIY);
-      return acc;
-    }, []);
+
+    const DIYListAll = DIYListData.map((item) => {
+      const { _id, title } = item;
+      return { _id, title };
+    });
+
     res.status(200).json({
       status: 'success',
       data: DIYListAll,
