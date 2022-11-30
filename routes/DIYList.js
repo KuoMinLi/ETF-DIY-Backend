@@ -42,6 +42,15 @@ router.post(
   handleErrorAsync(async (req, res) => {
     const { name, content } = req.body.data;
     const userid = req.user.id;
+    const nameCheck = await DIYList.find({ name });
+    if (nameCheck.length > 0) {
+      res.status(400).json({
+        status: 'fail',
+        message: '已有此名稱',
+      });
+      return;
+    }
+
     const newDIYList = await DIYList.create({
       name,
       content,
@@ -58,6 +67,23 @@ router.post(
 router.patch('/:id', isAuth, async (req, res) => {
   const { id } = req.params;
   const { name, content } = req.body;
+
+  if (!id) {
+    res.status(400).json({
+      status: 'fail',
+      message: '請輸入id',
+    });
+    return;
+  }
+
+  if (!name && !content) {
+    res.status(400).json({
+      status: 'fail',
+      message: '請輸入全部欄位',
+    });
+    return;
+  }
+
   const DIYListData = await DIYList.findByIdAndUpdate(
     id,
     { name, content },
