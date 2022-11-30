@@ -10,16 +10,12 @@ router.get(
   isAuth,
   handleErrorAsync(async (req, res) => {
     const DIYListData = await DIYList.find({ userid: req.user.id });
-    const DIYListAll = DIYListData.reduce((acc, item) => {
-      const {
-        _id, name,
-      } = item;
-      const DIY = {
-        _id, name,
-      };
-      acc.push(DIY);
-      return acc;
-    }, []);
+
+    const DIYListAll = DIYListData.map((item) => {
+      const { _id, title } = item;
+      return { _id, title };
+    });
+
     res.status(200).json({
       status: 'success',
       data: DIYListAll,
@@ -46,6 +42,15 @@ router.post(
   handleErrorAsync(async (req, res) => {
     const { name, content } = req.body.data;
     const userid = req.user.id;
+    const nameCheck = await DIYList.find({ name });
+    if (nameCheck.length > 0) {
+      res.status(400).json({
+        status: 'fail',
+        message: '已有此名稱',
+      });
+      return;
+    }
+
     const newDIYList = await DIYList.create({
       name,
       content,
@@ -62,6 +67,23 @@ router.post(
 router.patch('/:id', isAuth, async (req, res) => {
   const { id } = req.params;
   const { name, content } = req.body;
+
+  if (!id) {
+    res.status(400).json({
+      status: 'fail',
+      message: '請輸入id',
+    });
+    return;
+  }
+
+  if (!name && !content) {
+    res.status(400).json({
+      status: 'fail',
+      message: '請輸入全部欄位',
+    });
+    return;
+  }
+
   const DIYListData = await DIYList.findByIdAndUpdate(
     id,
     { name, content },
