@@ -35,7 +35,6 @@ router.post(
   '/',
   isAuth,
   handleErrorAsync(async (req, res) => {
-    console.log(req.body);
     const { ETFid } = req.body.data;
     const userid = req.user.id;
 
@@ -80,7 +79,7 @@ router.delete(
   '/',
   isAuth,
   handleErrorAsync(async (req, res) => {
-    const { ETFid } = req.body.data;
+    const { ETFid } = req.body;
     const userid = req.user.id;
     if (ETFid === undefined) {
       res.status(400).json({

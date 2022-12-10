@@ -27,7 +27,7 @@ router.post('/sign_up', async (req, res) => {
   try {
     const { data } = req.body;
     const {
-      name, email, confirmPassword, photo, sex,
+      name, email, confirmPassword, photo, sex, isAdmin,
     } = data;
 
     let { password } = data;
@@ -77,7 +77,7 @@ router.post('/sign_up', async (req, res) => {
 
     password = await bcrypt.hash(password, 12);
     const user = await User.create({
-      name, email, password, photo, sex,
+      name, email, password, photo, sex, isAdmin,
     });
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
       expiresIn: Date.now() + 60 * 30 * 1000,

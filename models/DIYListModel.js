@@ -9,6 +9,10 @@ const DIYListSchema = new mongoose.Schema({
     type: String,
     required: [true, '請輸入自組ETF的名字'],
   },
+  isPublic: {
+    type: Boolean,
+    default: false,
+  },
   content: [
     {
       name: {

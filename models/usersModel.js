@@ -30,6 +30,10 @@ const userSchema = new mongoose.Schema({
     default: Date.now,
     select: false,
   },
+  isAdmin: {
+    type: Boolean,
+    default: false,
+  },
 }, { versionKey: false });
 // User
 const User = mongoose.model('user', userSchema);

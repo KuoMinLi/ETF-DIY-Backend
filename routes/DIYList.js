@@ -5,20 +5,22 @@ const DIYList = require('../models/DIYListModel');
 const handleErrorAsync = require('../utils/handleErrorAsync');
 const isAuth = require('../utils/isAuth');
 
+router.get('/public', async (req, res) => {
+  const DIYListAll = await DIYList.find({ isPublic: true });
+  return res.status(200).json({
+    status: 'success',
+    data: DIYListAll,
+  });
+});
+
 router.get(
   '/',
   isAuth,
   handleErrorAsync(async (req, res) => {
     const DIYListData = await DIYList.find({ userid: req.user.id });
-
-    const DIYListAll = DIYListData.map((item) => {
-      const { _id, title } = item;
-      return { _id, title };
-    });
-
-    res.status(200).json({
+    return res.status(200).json({
       status: 'success',
-      data: DIYListAll,
+      data: DIYListData,
     });
   }),
 );
@@ -40,9 +42,9 @@ router.post(
   '/',
   isAuth,
   handleErrorAsync(async (req, res) => {
-    const { name, content } = req.body.data;
+    const { name, content, isPublic } = req.body.data;
     const userid = req.user.id;
-    const nameCheck = await DIYList.find({ name });
+    const nameCheck = await DIYList.find({ name, userid: req.user.id });
     if (nameCheck.length > 0) {
       res.status(400).json({
         status: 'fail',
@@ -55,6 +57,7 @@ router.post(
       name,
       content,
       userid,
+      isPublic,
     });
     res.status(200).json({
       status: 'success',
@@ -66,8 +69,7 @@ router.post(
 
 router.patch('/:id', isAuth, async (req, res) => {
   const { id } = req.params;
-  const { name, content } = req.body;
-
+  const { name, content } = req.body.data;
   if (!id) {
     res.status(400).json({
       status: 'fail',
